@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Savlon Bhoi ki Badmosi</title>
+    <link rel="icon" type="image/png" href="savlon.jpg">
+    <style>
+#fakeMouse {
+    /* Smooth movement for position changes */
+    transition: top 1s ease-in-out, left 1s ease-in-out;
+}
+        body {
+            font-family: Arial, sans-serif; /* Web font */
+            text-align: center;
+            padding-top: 15%; /* Vertically center it more */
+        }
+
+        h1 {
+            font-size: 50px;
+            margin-bottom: 30px;
+        }
+
+        /* The Search Bar */
+        input {
+            width: 500px;
+            padding: 15px 20px; /* Bigger touch area */
+            border-radius: 24px; /* The "Pill" shape */
+            border: 1px solid #dfe1e5; /* Subtle gray border */
+            outline: none; /* Removes the ugly blue glow when clicked */
+            font-size: 16px;
+        }
+
+        /* Shadow when hovering over the box */
+        input:hover, input:focus {
+            box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+            border-color: rgba(223,225,229,0);
+        }
+
+        /* The Buttons container */
+        .buttons-area {
+            margin-top: 30px;
+        }
+
+        button {
+            background-color: #f8f9fa;
+            border: 1px solid #f8f9fa;
+            border-radius: 4px;
+            color: #3c4043;
+            font-family: arial, sans-serif;
+            font-size: 14px;
+            margin: 11px 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            border: 1px solid #dadce0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+    /* The default "invisible" state */
+#introImage {
+    width: 200px;   /* Adjust size as needed */
+    opacity: 0;     /* 100% transparent */
+
+    /* Positioning to center it above everything */
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;   /* Ensure it sits on top of text */
+
+    /* Smoothly animate any changes to opacity over 0.5 seconds */
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* The "Active" state - add this class with JS */
+#introImage.fade-in-active {
+    opacity: 1; /* Fully visible */
+}
+    </style>
+</head>
+<body onload="checkSite()">
+<div id="clickCurtain" onclick="startPlay()" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+    <h2 style="font-family: Arial; color: #555;">(Click anywhere to start)</h2>
+</div>
+<img id="fakeMouse" src="cursor.png" style="position: absolute; width: 25px; z-index: 9999; display: none; pointer-events: none;">
+<img id="introImage" src="Yo.jpg" alt="Intro">
+<h1>Divyanshu Will Search That</h1>
+<input type="text" id="userQuestion" placeholder="Type your Question...">
+<div class="buttons-area">
+    <button id="searchBtn" onclick="googleIt()">Google Search</button>
+    <button onclick="typeWriter()">I'm Feeling Lucky</button>
+</div>
+<div id="linkBoxArea" style="display: none; margin-top: 20px;">
+    <p>🔗 Here is your link:</p>
+    <input type="text" id="resultLink" readonly style="background-color: #f1f3f4; color: #555;">
+    <button onclick="copyToClipboard()">Copy</button>
+</div>
+<script>
+    function googleIt() {
+        let questionBox = document.getElementById("userQuestion");
+        let questionText = questionBox.value;
+        let cleanUrl = window.location.origin + window.location.pathname;
+        let coupler = "?q=";
+        let safeCargo = encodeURIComponent(questionText);
+        let fullLink = cleanUrl + coupler + safeCargo;
+        // Find the box and the input field
+    let container = document.getElementById("linkBoxArea");
+    let resultInput = document.getElementById("resultLink");
+    // Put the link inside the input field
+    resultInput.value = fullLink;
+    // Reveal the hidden container!
+    container.style.display = "block";
+}
+// Helper function for the Copy button
+function copyToClipboard() {
+    let resultInput = document.getElementById("resultLink");
+    // Select the text inside the box
+    resultInput.select();
+    resultInput.setSelectionRange(0, 99999); // For mobile phones
+    // Run the copy command
+    navigator.clipboard.writeText(resultInput.value);
+    // Visual feedback
+    alert("Copied to clipboard!"); 
+}
+let textToType = "How to make pizza";
+let index = 0;
+function typeWriter() {
+    let questionBox = document.getElementById("userQuestion");
+    let currentLength = questionBox.value.length;
+
+    // 1. TYPING PHASE
+    if (index < textToType.length) {
+        questionBox.value += textToType.charAt(index);
+        index++;
+        setTimeout(typeWriter, 100); 
+    } 
+    // 2. MOUSE MOVEMENT PHASE (Typing is done!)
+    else {
+        // A. Reveal the mouse at a starting spot (e.g., bottom right)
+        let mouse = document.getElementById("fakeMouse");
+        mouse.style.display = "block";
+        mouse.style.top = "80%";  // Start near bottom
+        mouse.style.left = "80%"; // Start near right
+        
+        // B. Find the Target (The Search Button)
+        // We need to give your search button an ID first!
+        let button = document.getElementById("searchBtn");
+        
+        // This magic command gets the EXACT coordinates of the button
+        let rect = button.getBoundingClientRect();
+        
+        // C. Calculate center of button (left + half width, top + half height)
+        // We add 'window.scrollY' just in case the user scrolled down.
+        let targetLeft = rect.left + (rect.width / 2);
+        let targetTop = rect.top + (rect.height / 2) + window.scrollY;
+
+        // D. Move the mouse! (Wait 100ms to let it appear first)
+        setTimeout(function() {
+            mouse.style.left = targetLeft + "px";
+            mouse.style.top = targetTop + "px";
+        }, 100);
+
+        // E. The Click & Redirect
+        setTimeout(function() {
+            // Play a click sound!
+            let clickSound = new Audio('mouse_click.mp3'); clickSound.play();
+            
+            window.location.href = "https://www.youtube.com/shorts/" + encodeURIComponent(textToType);
+        }, 1500); // Wait 1.5s for the mouse to arrive
+    }
+}function checkSite() {
+    // 1. The Gatekeeper
+    if (window.location.search != "") {
+        // Decode the message
+        let params = new URLSearchParams(window.location.search);
+        textToType = params.get("q");
+
+        // NOTE: We do NOT start the sound/animation here anymore.
+        // We just wait for the user to click the curtain.
+    } else {
+        // If nothing in search, hide the curtain immediately so you can use the search bar
+        document.getElementById("clickCurtain").style.display = "none";
+    }
+}
+// 2. The New Trigger (Runs when user clicks the curtain)
+function startPlay() {
+    // Hide the curtain
+    document.getElementById("clickCurtain").style.display = "none";
+    // --- NOW we can play sound because the user CLICKED! ---
+    // Play Sound
+    let sound = new Audio('fahhhhh.mp3');
+    sound.play();
+    // Fade In Image
+    let img = document.getElementById('introImage');
+    img.classList.add('fade-in-active');
+    // Schedule Fade Out
+    setTimeout(function() {
+        img.classList.remove('fade-in-active');
+    }, 1500);
+    // Start Typing
+    setTimeout(typeWriter, 500);
+}
+</script>
+</body>
+
+</html>
